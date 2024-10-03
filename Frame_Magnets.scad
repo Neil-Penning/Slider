@@ -12,6 +12,8 @@ magnet_radius = 3/16 * 25.4 * 1/2 * 1.01; // inch to mm conversion
 magnet_offset = 0.5;     // mm
 fillet_radius = 2;       // Fillet radius for outer corners
 
+back_magnet_xy_offset = 8;
+
 // Helper function to calculate total width and height
 grid_width = sliders_x * slider_size + tolerance;
 grid_height = sliders_y * slider_size + tolerance;
@@ -45,4 +47,18 @@ difference() {
     
     // Magnet grid recessed in the base
     magnet_grid();
+
+    translate([0,0,magnet_offset]) {
+        translate([ -(1/2) * (grid_width), -(1/2) * (grid_height), 0
+            ]) cylinder(h=magnet_height, r=magnet_radius);
+
+        translate([ -(1/2) * (grid_width),  (1/2) * (grid_height), 0
+            ]) cylinder(h=magnet_height, r=magnet_radius);
+
+        translate([  (1/2) * (grid_width), -(1/2) * (grid_height), 0
+            ]) cylinder(h=magnet_height, r=magnet_radius);
+
+        translate([  (1/2) * (grid_width),  (1/2) * (grid_height), 0
+            ]) cylinder(h=magnet_height, r=magnet_radius);
+    }
 }

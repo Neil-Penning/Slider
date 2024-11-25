@@ -23,16 +23,16 @@ module rounded_square_2d(size, radius) {
 
 difference() {
     union() {
-        $fn = 64;
         // Create the main rounded square, but only round the side edges
+        color("purple")
         linear_extrude(height = square_height, center=true)
-        rounded_square_2d(square_size, fillet_radius);
+            rounded_square_2d(square_size, fillet_radius);
 
-        $fn = 32;
         // Subtract the character in the center
+        color("red")
         translate([0, 0, square_height/2])
-        linear_extrude(height = text_height) // Extrude slightly to ensure complete cutout
-        text(char_to_cutout, size = text_size, valign = "center", halign = "center", font = "ComicShannsMono Nerd Font:style=Regular");
+            linear_extrude(height = text_height) // Extrude slightly to ensure complete cutout
+            text(char_to_cutout, size = text_size, valign = "center", halign = "center", font = "ComicShannsMono Nerd Font:style=Regular");
     }
     translate([0,0,-square_height/2 + magnet_offset])
         linear_extrude(magnet_height)

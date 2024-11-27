@@ -1,40 +1,44 @@
-$fn = 128;
+$fn = 32;
 // Define parameters
-square_size = [20, 20];
-square_height = 10;
+circle_radius = 15;
+circle_height = 10;
 text_size = 20; // Font size for the character 'A'
 text_height = 2;
 fillet_radius = 2; // Fillet radius for side edges
 
 magnet_offset = 0.4;
-magnet_radius = 3/16 * (25.4) * 1.01 / 2;
-magnet_height = (1/16) * (25.4) * 1.01;
+magnet_radius = (1/4) * (25.4) * 1.01 / 2;
+magnet_height = (1/10) * (25.4) * 1.01;
 
 // Parameter to pass the character
-char_to_cutout = "A"; // Default character
+module button(char_to_cutout = "A") {
+    translate([0,0, circle_height/2])
+    difference() {
+        union() {
+            // Create the main rounded circle, but only round the side edges
+            color("purple")
+                minkowski() {
+                    linear_extrude(height = circle_height-2*fillet_radius, center=true)
+                        circle(circle_radius-2*fillet_radius);
+                    sphere(fillet_radius);
+                }
 
-module rounded_square_2d(size, radius) {
-    // Create a 2D square with rounded corners (only the 4 sides will be affected)
-    minkowski() {
-        square([size[0] - radius * 2, size[1] - radius * 2], center = true); // Shrink the square
-        circle(r=radius); // Add 2mm fillet to the corners
+            // Subtract the character in the center
+            color("red")
+                translate([0, 0, circle_height/2])
+                linear_extrude(height = text_height) // Extrude slightly to ensure complete cutout
+                text(
+                        char_to_cutout,
+                        size = text_size,
+                        valign = "center",
+                        halign = "center",
+                        font = "ComicShannsMono Nerd Font:style=Regular"
+                    );
+        }
+        translate([0,0,-circle_height/2 + magnet_offset])
+            linear_extrude(magnet_height)
+            circle(magnet_radius);
     }
 }
-
-difference() {
-    union() {
-        // Create the main rounded square, but only round the side edges
-        color("purple")
-        linear_extrude(height = square_height, center=true)
-            rounded_square_2d(square_size, fillet_radius);
-
-        // Subtract the character in the center
-        color("red")
-        translate([0, 0, square_height/2])
-            linear_extrude(height = text_height) // Extrude slightly to ensure complete cutout
-            text(char_to_cutout, size = text_size, valign = "center", halign = "center", font = "ComicShannsMono Nerd Font:style=Regular");
-    }
-    translate([0,0,-square_height/2 + magnet_offset])
-        linear_extrude(magnet_height)
-        circle(magnet_radius);
-}
+char_to_cutout="A";
+button(char_to_cutout);

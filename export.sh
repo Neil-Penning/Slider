@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Fix fonts
+# https://github.com/openscad/openscad/issues/2888
+export FONTCONFIG_PATH=$(brew --prefix)/etc/fonts/
+
 # Check if the user provided a string as an argument
 if [ -z "$1" ]; then
     echo "Usage: $0 <string>"
